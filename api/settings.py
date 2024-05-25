@@ -30,7 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-x6qobtl(k^7w#!btqlm2-#5e!6h=_^h(-^u3#qp!8=h7-mb%xu'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -38,6 +38,20 @@ DEBUG = True
 ALLOWED_HOSTS = ['8000-joshrudge22-project5api-5767s26hott.ws-eu114.gitpod.io',
 'api-backend-project-3eba949b1615.herokuapp.com']
 
+if 'CLIENT_ORIGIN' in os.environ:
+    CORS_ALLOWED_ORIGINS = [
+        os.environ.get('CLIENT_ORIGIN')
+    ]
+
+if 'CLIENT_ORIGIN_DEV' in os.environ:
+    extracted_url = re.match(
+        r'^.+-', os.environ.get('CLIENT_ORIGIN_DEV', ''), re.IGNORECASE
+    ).group(0)
+    CORS_ALLOWED_ORIGIN_REGEXES = [
+        rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
+    ]
+
+CORS_ALLOW_CREDENTIALS = True
 
 # Application definition
 
@@ -49,6 +63,7 @@ INSTALLED_APPS = [
     'allauth.account', 
     'allauth.socialaccount', 
     'dj_rest_auth.registration',
+    'corsheaders',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -91,6 +106,7 @@ JWT_AUTH_SAMESITE = 'None'
 REST_AUTH_SERIALIZERS = {'USER_DETAILS_SERIALIZER': 'api.serializers.CurrentUserSerializer'}
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
