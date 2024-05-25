@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 if os.path.exists('env.py'):
     import env
 
@@ -34,7 +35,8 @@ SECRET_KEY = 'django-insecure-x6qobtl(k^7w#!btqlm2-#5e!6h=_^h(-^u3#qp!8=h7-mb%xu
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['8000-joshrudge22-project5api-5767s26hott.ws-eu114.gitpod.io']
+ALLOWED_HOSTS = ['8000-joshrudge22-project5api-5767s26hott.ws-eu114.gitpod.io',
+'api-backend-project-3eba949b1615.herokuapp.com']
 
 
 # Application definition
@@ -123,10 +125,12 @@ WSGI_APPLICATION = 'api.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+    'default': ({
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    } if 'DEV' in os.environ else dj_database_url.parse(
+        os.environ.get('DATABASE_URL')
+    ))
 }
 
 
