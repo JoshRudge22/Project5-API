@@ -3,11 +3,12 @@ from .models import Profile
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
+    profile_id = serializers.ReadOnlyField(source='id')  
     is_owner = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
-        fields = ['id', 'user', 'bio', 'profile_image', 'created_at', 'is_owner']
+        fields = ['id', 'user', 'bio', 'profile_image', 'created_at', 'is_owner', 'profile_id']
 
     def get_is_owner(self, obj):
         request = self.context.get('request')
