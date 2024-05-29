@@ -36,7 +36,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = ['8000-joshrudge22-project5api-5767s26hott.ws-eu114.gitpod.io',
-'api-backend-project-3eba949b1615.herokuapp.com']
+'api-backend-project-3eba949b1615.herokuapp.com',
+'frontend-project5-8507d8b525c6.herokuapp.com']
 
 if 'CLIENT_ORIGIN' in os.environ:
     CORS_ALLOWED_ORIGINS = [
@@ -47,6 +48,9 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+
+CSRF_TRUSTED_ORIGINS = ['https://8000-joshrudge22-project5api-5767s26hott.ws-eu114.gitpod.io']
 
 # Application definition
 
@@ -72,6 +76,7 @@ INSTALLED_APPS = [
     'profiles',
     'posts',
     'comments',
+    'feed',
     
 ]
 
@@ -139,7 +144,7 @@ DATABASES = {
     'default': ({
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    } if 'DEV' in os.environ else dj_database_url.parse(
+    } if 'DATABASE_URL' not in os.environ else dj_database_url.parse(
         os.environ.get('DATABASE_URL')
     ))
 }

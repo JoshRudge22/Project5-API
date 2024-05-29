@@ -1,16 +1,15 @@
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
 from .models import Profile
 from .serializers import ProfileSerializer
-from api.permissions import IsOwnerOrReadOnly
 
 class ProfileList(generics.ListCreateAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -19,38 +18,28 @@ class ProfileList(generics.ListCreateAPIView):
 
 class ProfileDetail(APIView):
     serializer_class = ProfileSerializer
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
-    def get_object(self, pk):
+    def get_object(self):
         try:
-            profile = Profile.objects.get(pk=pk)
-            self.check_object_permissions(self.request, profile)
-            return profile
+            return self.request.user.profile
         except Profile.DoesNotExist:
             raise Http404
 
-    def get(self, request, pk):
-        profile = self.get_object(pk)
-        serializer = ProfileSerializer(profile, context={'request': request})
+    def get(self, request):
+        profile = self.get_object()
+        serializer = ProfileSerializer(profile)
         return Response(serializer.data)
 
-    def put(self, request, pk):
-        profile = self.get_object(pk)
-        serializer = ProfileSerializer(profile, data=request.data, context={'request': request})
+    def put(self, request):
+        profile = self.get_object()
+        serializer = ProfileSerializer(profile, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk):
-        profile = self.get_object(pk)
+    def delete(self, request):
+        profile = self.get_object()
         profile.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-class UpdateProfile(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        profile = request.user.profile
-        serializer = ProfileSerializer(profile)
-        return Response(serializer.data)

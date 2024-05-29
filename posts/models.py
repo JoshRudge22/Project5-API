@@ -10,3 +10,9 @@ class Post(models.Model):
 
     def __str__(self):
         return f'{self.user.username} - {self.caption[:20]}'
+
+    def save(self, *args, **kwargs):
+        created = not self.pk
+        super().save(*args, **kwargs)
+        if created:
+            FeedItem.objects.create(post=self, user=self.user)
