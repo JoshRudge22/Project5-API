@@ -53,10 +53,10 @@ class PostDetail(APIView):
 
 class UserPostList(generics.ListAPIView):
     serializer_class = PostSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsOwnerOrReadOnly]
 
     def get_queryset(self):
-        return Post.objects.filter(author=self.request.user)
+        return Post.objects.filter(user=self.request.user)
 
 class FeedList(generics.ListAPIView):
     queryset = Post.objects.all().order_by('-created_at')
