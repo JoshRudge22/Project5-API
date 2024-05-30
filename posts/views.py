@@ -1,7 +1,8 @@
+from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import generics, status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.http import Http404
 from .models import Post
 from .serializers import PostSerializer
@@ -9,17 +10,20 @@ from api.permissions import IsOwnerOrReadOnly
 
 class PostList(generics.ListCreateAPIView):
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        return Post.objects.filter(user=self.request.user).order_by('-created_at')
+        if self.request.user.is_authenticated:
+            return Post.objects.filter(user=self.request.user).order_by('-created_at')
+        else:
+            return Post.objects.all().order_by('-created_at')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
 class PostDetail(APIView):
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
     def get_object(self, pk):
         try:
@@ -46,3 +50,7 @@ class PostDetail(APIView):
         post = self.get_object(pk)
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class FeedList(generics.ListAPIView):
+    queryset = Post.objects.all().order_by('-created_at')
+    serializer_class = PostSerializer

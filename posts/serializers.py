@@ -3,12 +3,17 @@ from .models import Post
 
 class PostSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='user.username')
-    profile_image = serializers.ReadOnlyField(source='user.profile.image.url')
+    profile_image = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
         fields = ['id', 'user', 'image', 'video', 'caption', 'created_at', 'owner', 'profile_image']
         read_only_fields = ['id', 'user', 'created_at']
+
+    def get_profile_image(self, obj):
+        if obj.user.profile.profile_image:
+            return obj.user.profile.profile_image.url
+        return None
 
     def validate_image(self, value):
         if value.size > 1024 * 1024 * 2:
