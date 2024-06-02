@@ -43,3 +43,11 @@ class ProfileDetail(APIView):
         profile = self.get_object()
         profile.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class ProfileRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user.profile
