@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     'comments',
     'likes',
     'contact',
+    'follow'
 ]
 
 SITE_ID = 1
