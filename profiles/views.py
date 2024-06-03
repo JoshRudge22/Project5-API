@@ -1,10 +1,10 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
 from .models import Profile
-from .serializers import ProfileSerializer
+from .serializers import ProfileSerializer, UserProfileSerializer
 
 class ProfileList(generics.ListCreateAPIView):
     queryset = Profile.objects.all()
@@ -21,10 +21,7 @@ class ProfileDetail(APIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        try:
-            return self.request.user.profile
-        except Profile.DoesNotExist:
-            raise Http404
+        return self.request.user.profile
 
     def get(self, request):
         profile = self.get_object()
@@ -44,10 +41,14 @@ class ProfileDetail(APIView):
         profile.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-class ProfileRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+class UserProfileViewByUsername(generics.RetrieveAPIView):
     queryset = Profile.objects.all()
-    serializer_class = ProfileSerializer
-    permission_classes = [IsAuthenticated]
+    serializer_class = UserProfileSerializer
+    lookup_field = 'username'
 
     def get_object(self):
-        return self.request.user.profile
+        username = self.kwargs.get('username')
+        try:
+            return Profile.objects.get(user__username=username)
+        except Profile.DoesNotExist:
+            raise Http404

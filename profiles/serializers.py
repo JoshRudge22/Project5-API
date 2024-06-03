@@ -14,7 +14,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         return request.user == obj.user
 
-class ProfileUpdateSerializer(serializers.ModelSerializer):
+class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['bio', 'profile_image']
+        fields = '__all__'
