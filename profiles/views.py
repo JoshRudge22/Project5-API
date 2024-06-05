@@ -16,10 +16,12 @@ class ProfileList(generics.ListCreateAPIView):
         context['request'] = self.request
         return context
 
-    def perform_create(self, serializer):
-        if Profile.objects.filter(user=self.request.user).exists():
-            raise ValidationError('A profile for this user already exists.')
-        serializer.save(user=self.request.user)
+    def get_queryset(self):
+        queryset = Profile.objects.all()
+        username = self.request.query_params.get('search', None)
+        if username is not None:
+            queryset = queryset.filter(user__username__icontains=username)
+        return queryset
 
 class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Profile.objects.all()
