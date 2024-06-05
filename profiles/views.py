@@ -1,7 +1,7 @@
 from rest_framework import generics, permissions, status
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import ValidationError
 from django.http import Http404
 from .models import Profile
 from .serializers import ProfileSerializer, UserProfileSerializer
@@ -16,30 +16,24 @@ class ProfileList(generics.ListCreateAPIView):
         context['request'] = self.request
         return context
 
-class ProfileDetail(APIView):
+    def perform_create(self, serializer):
+        if Profile.objects.filter(user=self.request.user).exists():
+            raise ValidationError('A profile for this user already exists.')
+        serializer.save(user=self.request.user)
+
+class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_object(self):
-        return self.request.user.profile
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
 
-    def get(self, request):
-        profile = self.get_object()
-        serializer = ProfileSerializer(profile)
-        return Response(serializer.data)
-
-    def put(self, request):
-        profile = self.get_object()
-        serializer = ProfileSerializer(profile, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request):
-        profile = self.get_object()
-        profile.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def get_queryset(self):
+        user = self.request.user
+        return Profile.objects.filter(user=user)
 
 class UserProfileViewByUsername(generics.RetrieveAPIView):
     queryset = Profile.objects.all()

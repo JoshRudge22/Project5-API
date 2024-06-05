@@ -9,7 +9,7 @@ class FollowerList(generics.ListCreateAPIView):
     serializer_class = FollowerSerializer
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        serializer.save(follower=self.request.user)
 
 class FollowerDetail(generics.RetrieveDestroyAPIView):
     permission_classes = [IsOwnerOrReadOnly]
