@@ -1,31 +1,59 @@
-from rest_framework import generics, permissions
-from api.permissions import IsOwnerOrReadOnly
-from .models import Follower
-from .serializers import FollowerSerializer
+from rest_framework import generics, permissions, status
+from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
+from django.http import Http404
+from .models import Follow
+from .serializers import FollowSerializer, FollowerCountSerializer
+from django.contrib.auth.models import User
+from django.db.models import Count
 
-class FollowerList(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    queryset = Follower.objects.all()
-    serializer_class = FollowerSerializer
+class FollowUser(generics.CreateAPIView):
+    queryset = Follow.objects.all()
+    serializer_class = FollowSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(follower=self.request.user)
 
-class FollowerDetail(generics.RetrieveDestroyAPIView):
-    permission_classes = [IsOwnerOrReadOnly]
-    queryset = Follower.objects.all()
-    serializer_class = FollowerSerializer
+class UnfollowUser(generics.DestroyAPIView):
+    queryset = Follow.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
 
-class UserFollowersList(generics.ListAPIView):
-    serializer_class = FollowerSerializer
+    def get_object(self):
+        following_user = self.kwargs['following_id']
+        try:
+            return Follow.objects.get(follower=self.request.user, following__id=following_user)
+        except Follow.DoesNotExist:
+            raise Http404
+
+class FollowersList(generics.ListAPIView):
+    serializer_class = FollowSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        user_id = self.kwargs['user_id']
-        return Follower.objects.filter(user_id=user_id)
+        username = self.kwargs['username']
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise Http404
+        return Follow.objects.filter(following=user)
 
-class UserFollowingList(generics.ListAPIView):
-    serializer_class = FollowerSerializer
+class FollowingList(generics.ListAPIView):
+    serializer_class = FollowSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        follower_id = self.kwargs['user_id']
-        return Follower.objects.filter(follower_id=follower_id)
+        username = self.kwargs['username']
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise Http404
+        return Follow.objects.filter(follower=user)
+
+class FollowerFollowingCount(generics.RetrieveAPIView):
+    queryset = User.objects.annotate(
+        follower_count=Count('followers'),
+        following_count=Count('following')
+    )
+    serializer_class = FollowerCountSerializer
+    lookup_field = 'username'
