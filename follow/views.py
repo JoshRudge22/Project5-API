@@ -1,30 +1,29 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
+from rest_framework.views import APIView
 from django.http import Http404
 from .models import Follow
 from .serializers import FollowSerializer, FollowerCountSerializer
 from django.contrib.auth.models import User
 from django.db.models import Count
 
-class FollowUser(generics.CreateAPIView):
-    queryset = Follow.objects.all()
-    serializer_class = FollowSerializer
-    permission_classes = [permissions.IsAuthenticated]
+class FollowUser(APIView):
+    def post(self, request, username):
+        following_user = User.objects.get(username=username)
+        follow, created = Follow.objects.get_or_create(follower=request.user, following=following_user)
+        if created:
+            return Response({'message': 'You are now following this user.'}, status=201)
+        return Response({'message': 'You are already following this user.'}, status=200)
 
-    def perform_create(self, serializer):
-        serializer.save(follower=self.request.user)
-
-class UnfollowUser(generics.DestroyAPIView):
-    queryset = Follow.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_object(self):
-        following_user = self.kwargs['following_id']
+class UnfollowUser(APIView):
+    def delete(self, request, username):
+        following_user = User.objects.get(username=username)
         try:
-            return Follow.objects.get(follower=self.request.user, following__id=following_user)
+            Follow.objects.get(follower=request.user, following=following_user).delete()
+            return Response({'message': 'You are no longer following this user.'}, status=204)
         except Follow.DoesNotExist:
-            raise Http404
+            return Response({'message': 'You are not following this user.'}, status=404)
 
 class FollowersList(generics.ListAPIView):
     serializer_class = FollowSerializer

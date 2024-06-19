@@ -37,6 +37,15 @@ class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
         user = self.request.user
         return Profile.objects.filter(user=user)
 
+    def render_to_response(self, context, **response_kwargs):
+        response = super().render_to_response(context, **response_kwargs)
+        if self.request.method == 'GET':
+            follow_url = reverse('follow', kwargs={'username': context['view'].get_object().user.username})
+            unfollow_url = reverse('unfollow', kwargs={'following_id': context['view'].get_object().user.id})
+            response.context_data['follow_url'] = follow_url
+            response.context_data['unfollow_url'] = unfollow_url
+        return response
+
 class UserProfileViewByUsername(generics.RetrieveAPIView):
     queryset = Profile.objects.all()
     serializer_class = UserProfileSerializer

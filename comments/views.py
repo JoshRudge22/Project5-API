@@ -1,8 +1,11 @@
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from .models import Comment
+from posts.models import Post
 from .serializers import CommentSerializer
+from posts.serializers import PostSerializer
 from api.permissions import IsOwnerOrReadOnly
 
 class CommentListCreateAPIView(generics.ListCreateAPIView):
@@ -20,3 +23,12 @@ class CommentRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+
+class UserCommentedPostsAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        user_id = request.user.id
+        commented_posts = Post.objects.filter(comments__user_id=user_id).distinct()
+        serializer = PostSerializer(commented_posts, many=True)
+        return Response(serializer.data)
