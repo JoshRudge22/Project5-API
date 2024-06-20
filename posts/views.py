@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.http import Http404
 from .models import Post
+from follow.models import Follow
 from .serializers import PostSerializer
 from api.permissions import IsOwnerOrReadOnly
 
@@ -61,3 +62,12 @@ class UserPostList(generics.ListAPIView):
 class FeedList(generics.ListAPIView):
     queryset = Post.objects.all().order_by('-created_at')
     serializer_class = PostSerializer
+
+class FollowingFeed(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get(self, request):
+        following_users = Follow.objects.filter(follower=request.user).values_list('following', flat=True)
+        following_posts = Post.objects.filter(user__in=following_users).order_by('-created_at')
+        serializer = PostSerializer(following_posts, many=True)
+        return Response(serializer.data)
