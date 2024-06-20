@@ -3,10 +3,19 @@ from .models import Follow
 from django.contrib.auth.models import User
 
 class FollowSerializer(serializers.ModelSerializer):
+    follower_username = serializers.SerializerMethodField()
+    following_username = serializers.SerializerMethodField()
+
     class Meta:
         model = Follow
-        fields = ['id', 'follower', 'following', 'created_at']
+        fields = ['id', 'follower', 'following', 'follower_username', 'following_username', 'created_at']
         read_only_fields = ['follower']
+
+    def get_follower_username(self, obj):
+        return obj.follower.username
+    
+    def get_following_username(self, obj):
+        return obj.following.username
 
     def validate(self, data):
         if self.context['request'].user == data['following']:
