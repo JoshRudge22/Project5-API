@@ -1,10 +1,7 @@
 from django.urls import path
-from likes import views
+from . import views
 
 urlpatterns = [
-    path('likes/', views.LikeCreateAPIView.as_view()),
-    path('likes/posts/<int:post_id>/', views.LikeListAPIView.as_view()),
-    path('likes/comments/<int:comment_id>/', views.LikeListAPIView.as_view()),
-    path('likes/posts/<int:post_id>/count/', views.LikeCountAPIView.as_view()),
-    path('likes/comments/<int:comment_id>/count/', views.LikeCountAPIView.as_view()),
+    path('posts/<int:post_id>/like/', views.PostLikeView.as_view()),
+    path('posts/<int:post_id>/likes/', views.PostLikesView.as_view()),
 ]

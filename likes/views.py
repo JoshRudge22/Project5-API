@@ -1,38 +1,26 @@
-from rest_framework import generics
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from .models import Like
 from .serializers import LikeSerializer
-from rest_framework.response import Response
-from django.db.models import Count
+from posts.models import Post
 
-class LikeCreateAPIView(generics.CreateAPIView):
-    queryset = Like.objects.all()
-    serializer_class = LikeSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+class PostLikeView(APIView):
+    def post(self, request, post_id):
+        post = Post.objects.get(id=post_id)
+        if Like.objects.filter(user=request.user, post=post).exists():
+            return Response({'message': 'You already liked this post'}, status=400)
+        Like.objects.create(user=request.user, post=post)
+        return Response({'message': 'Post liked successfully'})
 
-class LikeListAPIView(generics.ListAPIView):
-    serializer_class = LikeSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    def delete(self, request, post_id):
+        post = Post.objects.get(id=post_id)
+        Like.objects.filter(user=request.user, post=post).delete()
+        return Response({'message': 'Post unliked successfully'})
 
-    def get_queryset(self):
-        post_id = self.kwargs.get('post_id')
-        comment_id = self.kwargs.get('comment_id')
-        if post_id:
-            return Like.objects.filter(post_id=post_id)
-        elif comment_id:
-            return Like.objects.filter(comment_id=comment_id)
-        return Like.objects.none()
-
-class LikeCountAPIView(generics.GenericAPIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
-
-    def get(self, request, *args, **kwargs):
-        post_id = self.kwargs.get('post_id')
-        comment_id = self.kwargs.get('comment_id')
-        if post_id:
-            count = Like.objects.filter(post_id=post_id).count()
-        elif comment_id:
-            count = Like.objects.filter(comment_id=comment_id).count()
-        else:
-            count = 0
-        return Response({'count': count})
+class PostLikesView(APIView):
+    def get(self, request, post_id):
+        post = Post.objects.get(id=post_id)
+        likes = post.like_set.all()
+        usernames = [like.user.username for like in likes]
+        return Response({'usernames': usernames})

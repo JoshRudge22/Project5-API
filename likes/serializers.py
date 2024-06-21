@@ -1,18 +1,18 @@
 from rest_framework import serializers
-from django.db import IntegrityError
 from .models import Like
+from posts.models import Post
 
 class LikeSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
-
     class Meta:
         model = Like
-        fields = ['id', 'created_at', 'user', 'post', 'comment']
+        fields = ['id', 'user', 'post']
 
-    def create(self, validated_data):
-        try:
-            return super().create(validated_data)
-        except IntegrityError:
-            raise serializers.ValidationError({
-                'detail': 'possible duplicate'
-            })
+class PostLikeSerializer(serializers.ModelSerializer):
+    likes = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Post
+        fields = ['id', 'likes']
+
+    def get_likes(self, obj):
+        return obj.likes.count()
