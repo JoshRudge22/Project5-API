@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from .models import Like
 from .serializers import LikeSerializer
 from posts.models import Post
+from posts.serializers import PostSerializer
 
 class PostLikeView(APIView):
     def post(self, request, post_id):
@@ -24,3 +25,10 @@ class PostLikesView(APIView):
         likes = post.like_set.all()
         usernames = [like.user.username for like in likes]
         return Response({'usernames': usernames})
+
+class UserLikedPostsView(APIView):
+    def get(self, request):
+        likes = Like.objects.filter(user=request.user)
+        liked_posts = [like.post for like in likes]
+        serializer = PostSerializer(liked_posts, many=True)
+        return Response(serializer.data)
