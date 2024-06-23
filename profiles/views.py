@@ -1,10 +1,16 @@
+from django.contrib.auth.models import User
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError
+from rest_framework.views import APIView 
 from django.http import Http404
 from .models import Profile
 from .serializers import ProfileSerializer, UserProfileSerializer
+from posts.models import Post
+from likes.models import Like
+from follow.models import Follow
+from comments.models import Comment
 
 class ProfileList(generics.ListCreateAPIView):
     queryset = Profile.objects.all()
@@ -57,3 +63,19 @@ class UserProfileViewByUsername(generics.RetrieveAPIView):
             return Profile.objects.get(user__username=username)
         except Profile.DoesNotExist:
             raise Http404
+
+class DeleteProfileView(APIView):
+    def delete(self, request, username):
+        try:
+            user = User.objects.get(username=username)
+            profile = Profile.objects.get(user=user)
+            Post.objects.filter(user=user).delete()
+            Like.objects.filter(user=user).delete()
+            Follow.objects.filter(follower=user).delete()
+            Follow.objects.filter(following=user).delete()
+            Comment.objects.filter(user=user).delete()
+            profile.delete()
+            user.delete()
+            return Response({'message': 'Profile deleted successfully!'}, status=200)
+        except User.DoesNotExist:
+            return Response({'message': 'User not found'}, status=404)

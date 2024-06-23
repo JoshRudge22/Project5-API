@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.http import Http404
 from .models import Post
+from follow.models import Follow
 from .serializers import PostSerializer
 from api.permissions import IsOwnerOrReadOnly
 
