@@ -8,7 +8,7 @@ class Profile(models.Model):
     username = models.CharField(max_length=50)
     full_name = models.CharField(max_length=100, blank=True)
     bio = models.TextField(blank=True)
-    profile_image = models.ImageField(upload_to='profile_images', default='https://res.cloudinary.com/dhgjmfjvh/image/upload/v1234567/default_profile_egbrlo.jpg')
+    profile_image = models.ImageField(upload_to='profile_images', default='../default_profile_tpcl4s.jpg')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
