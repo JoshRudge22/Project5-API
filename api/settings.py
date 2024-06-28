@@ -37,7 +37,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['8000-joshrudge22-project5api-5ve3spawl9d.ws-eu114.gitpod.io',
+ALLOWED_HOSTS = ['8000-joshrudge22-project5api-czs6hcnydso.ws.codeinstitute-ide.net',
 'api-backend-project-3eba949b1615.herokuapp.com',
 'frontend-project5-8507d8b525c6.herokuapp.com']
 
@@ -52,7 +52,7 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
 CORS_ALLOW_CREDENTIALS = True
 
 
-CSRF_TRUSTED_ORIGINS = ['https://8000-joshrudge22-project5api-5ve3spawl9d.ws-eu114.gitpod.io']
+CSRF_TRUSTED_ORIGINS = ['https://8000-joshrudge22-project5api-czs6hcnydso.ws.codeinstitute-ide.net']
 
 # Application definition
 
