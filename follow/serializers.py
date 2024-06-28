@@ -23,8 +23,8 @@ class FollowSerializer(serializers.ModelSerializer):
         return data
 
 class FollowerCountSerializer(serializers.ModelSerializer):
-    follower_count = serializers.IntegerField()
-    following_count = serializers.IntegerField()
+    follower_count = serializers.IntegerField(read_only=True)
+    following_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = User

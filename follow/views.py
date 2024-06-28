@@ -49,10 +49,24 @@ class FollowingList(generics.ListAPIView):
             raise Http404
         return Follow.objects.filter(follower=user)
 
-class FollowerFollowingCount(generics.RetrieveAPIView):
-    queryset = User.objects.annotate(
-        follower_count=Count('followers'),
-        following_count=Count('following')
-    )
+class FollowerCountView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
     serializer_class = FollowerCountSerializer
     lookup_field = 'username'
+
+    def get_object(self):
+        user = super().get_object()
+        user.follower_count = user.followers.count()
+        user.following_count = user.following.count()
+        return user
+
+class FollowingCountView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = FollowerCountSerializer
+    lookup_field = 'username'
+
+    def get_object(self):
+        user = super().get_object()
+        user.follower_count = user.followers.count()
+        user.following_count = user.following.count()
+        return user
