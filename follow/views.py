@@ -70,3 +70,14 @@ class FollowingCountView(generics.RetrieveAPIView):
         user.follower_count = user.followers.count()
         user.following_count = user.following.count()
         return user
+
+class IsFollowing(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, username):
+        try:
+            following_user = User.objects.get(username=username)
+            is_following = Follow.objects.filter(follower=request.user, following=following_user).exists()
+            return Response({'is_following': is_following}, status=200)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=404)

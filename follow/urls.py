@@ -8,4 +8,5 @@ urlpatterns = [
     path('following/<str:username>/', views.FollowingList.as_view()),
     path('profiles/<str:username>/follower_count/', views.FollowerCountView.as_view()),
     path('profiles/<str:username>/following_count/', views.FollowingCountView.as_view()),
+    path('profiles/<str:username>/is_following/', views.IsFollowing.as_view()),
 ]
