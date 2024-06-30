@@ -80,8 +80,9 @@ class FollowingFeed(APIView):
 
     def get(self, request):
         following_users = Follow.objects.filter(follower=request.user).values_list('following', flat=True)
-        limit = int(self.request.GET.get('limit', 5))
-        offset = int(self.request.GET.get('offset', 0))
+        limit = int(request.GET.get('limit', 5))
+        offset = int(request.GET.get('offset', 0))
         following_posts = Post.objects.filter(user__in=following_users).order_by('-created_at')[offset:offset + limit]
         serializer = PostSerializer(following_posts, many=True)
-        has_more_posts = Post.objects.filter(user__in=following_users).count
+        has_more_posts = Post.objects.filter(user__in=following_users).count() > offset + limit
+        return Response({'posts': serializer.data, 'has_more_posts': has_more_posts})

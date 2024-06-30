@@ -9,7 +9,7 @@ class FollowSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Follow
-        fields = ['id', 'follower', 'following', 'follower_username', 'following_username', 'created_at']
+        fields = ['id', 'follower', 'following', 'follower_username', 'following_username', 'created_at', 'is_following']
         read_only_fields = ['follower']
 
     def get_follower_username(self, obj):
