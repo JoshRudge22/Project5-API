@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class FollowSerializer(serializers.ModelSerializer):
     follower_username = serializers.SerializerMethodField()
     following_username = serializers.SerializerMethodField()
+    is_following = serializers.SerializerMethodField()
 
     class Meta:
         model = Follow
@@ -16,6 +17,10 @@ class FollowSerializer(serializers.ModelSerializer):
     
     def get_following_username(self, obj):
         return obj.following.username
+
+    def get_is_following(self, obj):
+        request = self.context['request']
+        return Follow.objects.filter(follower=request.user, following=obj.following).exists()
 
     def validate(self, data):
         if self.context['request'].user == data['following']:

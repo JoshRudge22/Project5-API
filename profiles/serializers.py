@@ -10,7 +10,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['profile_id', 'user', 'full_name', 'bio', 'profile_image', 'created_at', 'is_owner', 'following_count', 'followers_count']
+        fields = ['profile_id', 'user', 'full_name', 'bio', 'location', 'profile_image', 'created_at', 'is_owner', 'following_count', 'followers_count']
 
     def get_is_owner(self, obj):
         request = self.context.get('request')

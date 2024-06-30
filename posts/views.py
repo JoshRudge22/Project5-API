@@ -63,11 +63,25 @@ class FeedList(generics.ListAPIView):
     queryset = Post.objects.all().order_by('-created_at')
     serializer_class = PostSerializer
 
+    def get_queryset(self):
+        limit = int(self.request.GET.get('limit', 5))
+        offset = int(self.request.GET.get('offset', 0))
+        posts = Post.objects.all().order_by('-created_at')[offset:offset + limit]
+        has_more_posts = Post.objects.count() > offset + limit
+        return posts, has_more_posts
+
+    def list(self, request, *args, **kwargs):
+        queryset, has_more_posts = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({'posts': serializer.data, 'has_more_posts': has_more_posts})
+
 class FollowingFeed(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request):
         following_users = Follow.objects.filter(follower=request.user).values_list('following', flat=True)
-        following_posts = Post.objects.filter(user__in=following_users).order_by('-created_at')
+        limit = int(self.request.GET.get('limit', 5))
+        offset = int(self.request.GET.get('offset', 0))
+        following_posts = Post.objects.filter(user__in=following_users).order_by('-created_at')[offset:offset + limit]
         serializer = PostSerializer(following_posts, many=True)
-        return Response(serializer.data)
+        has_more_posts = Post.objects.filter(user__in=following_users).count
