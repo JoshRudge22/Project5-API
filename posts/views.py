@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.pagination import LimitOffsetPagination
 from django.http import Http404
 from .models import Post
 from follow.models import Follow
@@ -12,8 +13,7 @@ from api.permissions import IsOwnerOrReadOnly
 class PostList(generics.ListCreateAPIView):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    def paginate_queryset(self, queryset):
-        return None
+    pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
@@ -57,8 +57,7 @@ class PostDetail(APIView):
 class UserPostList(generics.ListAPIView):
     serializer_class = PostSerializer
     permission_classes = [IsOwnerOrReadOnly]
-    def paginate_queryset(self, queryset):
-        return None
+    pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
         return Post.objects.filter(user=self.request.user)
@@ -66,13 +65,12 @@ class UserPostList(generics.ListAPIView):
 class FeedList(generics.ListAPIView):
     queryset = Post.objects.all().order_by('-created_at')
     serializer_class = PostSerializer
-    def paginate_queryset(self, queryset):
-        return None
+    pagination_class = LimitOffsetPagination
+    
 
 class FollowingFeed(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
-    def paginate_queryset(self, queryset):
-        return None
+    pagination_class = LimitOffsetPagination
 
     def get(self, request):
         following_users = Follow.objects.filter(follower=request.user).values_list('following', flat=True)
