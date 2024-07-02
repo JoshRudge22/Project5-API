@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.db.models import Q
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -24,9 +25,13 @@ class ProfileList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         queryset = Profile.objects.all()
-        username = self.request.query_params.get('search', None)
-        if username is not None:
-            queryset = queryset.filter(user__username__icontains=username)
+        search_query = self.request.query_params.get('search', None)
+        if search_query:
+            queryset = queryset.filter(
+                Q(user__username__icontains=search_query) |
+                Q(full_name__icontains=search_query) |
+                Q(location__icontains=search_query)
+            )
         return queryset
 
 class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):

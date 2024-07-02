@@ -60,7 +60,7 @@ class UserPostList(generics.ListAPIView):
     pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
-        return Post.objects.filter(user=self.request.user)
+        return Post.objects.filter(user=self.request.user).order_by('-created_at')
 
 class FeedList(generics.ListAPIView):
     queryset = Post.objects.all().order_by('-created_at')
