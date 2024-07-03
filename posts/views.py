@@ -61,7 +61,7 @@ class PostDetail(APIView):
 class UserPostList(generics.ListAPIView):
     serializer_class = PostSerializer
     permission_classes = [IsOwnerOrReadOnly]
-    pagination_class = LimitOffsetPagination
+    pagination_class = CustomSetPagination
 
     def get_queryset(self):
         return Post.objects.filter(user=self.request.user).order_by('-created_at')
@@ -74,7 +74,7 @@ class FeedList(generics.ListAPIView):
 
 class FollowingFeed(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
-    pagination_class = LimitOffsetPagination
+    pagination_class = CustomSetPagination
 
     def get(self, request):
         following_users = Follow.objects.filter(follower=request.user).values_list('following', flat=True)
