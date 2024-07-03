@@ -27,7 +27,7 @@ class CommentRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
 class UserCommentedPostsAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, pk):
+    def get(self, request):
         user_id = request.user.id
         commented_posts = Post.objects.filter(comments__user_id=user_id).distinct()
         serializer = PostSerializer(commented_posts, many=True)

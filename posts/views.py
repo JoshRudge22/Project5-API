@@ -10,6 +10,10 @@ from follow.models import Follow
 from .serializers import PostSerializer
 from api.permissions import IsOwnerOrReadOnly
 
+class CustomSetPagination(LimitOffsetPagination):
+    page_size = 5
+    max_page_size = 5
+
 class PostList(generics.ListCreateAPIView):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -65,7 +69,7 @@ class UserPostList(generics.ListAPIView):
 class FeedList(generics.ListAPIView):
     queryset = Post.objects.all().order_by('-created_at')
     serializer_class = PostSerializer
-    pagination_class = LimitOffsetPagination
+    pagination_class = CustomSetPagination
     
 
 class FollowingFeed(APIView):
@@ -77,3 +81,4 @@ class FollowingFeed(APIView):
         following_posts = Post.objects.filter(user__in=following_users).order_by('-created_at')
         serializer = PostSerializer(following_posts, many=True)
         return Response(serializer.data)
+
