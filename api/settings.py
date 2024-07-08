@@ -36,10 +36,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+# REMOVE BEFORE SUBMITTING OR IT WILL FAIL YOUR PROJECT '*'
 ALLOWED_HOSTS = ['8000-joshrudge22-project5api-a8gemgpmvag.ws.codeinstitute-ide.net',
 'api-backend-project-3eba949b1615.herokuapp.com',
-'frontend-project5-8507d8b525c6.herokuapp.com']
+'frontend-project5-8507d8b525c6.herokuapp.com',
+'*']
 # Application definition
 
 INSTALLED_APPS = [
@@ -120,6 +121,8 @@ CORS_ALLOWED_ORIGIN_REGEXES = [ r"^https://.*\.codeinstitute-ide\.net$", "https:
 
 CORS_ALLOW_CREDENTIALS = True
 
+# REMOVE BEFORE SUBMITTING OR IT WILL FAIL YOUR PROJECT 'CORS_ORIGIN_ALLOW_ALL = True'
+CORS_ORIGIN_ALLOW_ALL = True
 
 CSRF_TRUSTED_ORIGINS = ['https://8000-joshrudge22-project5api-a8gemgpmvag.ws.codeinstitute-ide.net',]
 
