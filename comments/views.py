@@ -2,11 +2,16 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.pagination import LimitOffsetPagination
 from .models import Comment
 from posts.models import Post
 from .serializers import CommentSerializer
 from posts.serializers import PostSerializer
 from api.permissions import IsOwnerOrReadOnly
+
+class CustomSetPagination(LimitOffsetPagination):
+    page_size = 5
+    max_page_size = 5
 
 class CommentListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = CommentSerializer
@@ -26,6 +31,7 @@ class CommentRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
 
 class UserCommentedPostsAPIView(APIView):
     permission_classes = [IsAuthenticated]
+    pagination_class = CustomSetPagination
 
     def get(self, request):
         user_id = request.user.id
