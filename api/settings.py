@@ -23,6 +23,12 @@ CLOUDINARY_STORAGE = {
 }
 MEDIA_URL = '/media/'
 
+if 'CLIENT_ORIGIN_DEV' in os.environ:
+    extracted_url = re.match(r'^.+-', os.environ.get('CLIENT_ORIGIN_DEV', ''), re.IGNORECASE).group(0)
+    CORS_ALLOWED_ORIGIN_REGEXES = [
+        rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
+    ]
+
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -36,11 +42,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-# REMOVE BEFORE SUBMITTING OR IT WILL FAIL YOUR PROJECT '*'
+
 ALLOWED_HOSTS = ['8000-joshrudge22-project5api-a8gemgpmvag.ws.codeinstitute-ide.net',
 'api-backend-project-3eba949b1615.herokuapp.com',
-'frontend-project5-8507d8b525c6.herokuapp.com',
-'*']
+'frontend-project5-8507d8b525c6.herokuapp.com']
 # Application definition
 
 INSTALLED_APPS = [
@@ -120,9 +125,6 @@ if 'CLIENT_ORIGIN' in os.environ:
 CORS_ALLOWED_ORIGIN_REGEXES = [ r"^https://.*\.codeinstitute-ide\.net$", "https://3000-joshrudge22-frontendpro.*\.ws-eu115.gitpod.io/" ]
 
 CORS_ALLOW_CREDENTIALS = True
-
-# REMOVE BEFORE SUBMITTING OR IT WILL FAIL YOUR PROJECT 'CORS_ORIGIN_ALLOW_ALL = True'
-CORS_ORIGIN_ALLOW_ALL = True
 
 CSRF_TRUSTED_ORIGINS = ['https://8000-joshrudge22-project5api-a8gemgpmvag.ws.codeinstitute-ide.net',]
 

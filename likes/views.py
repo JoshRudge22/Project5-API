@@ -38,9 +38,6 @@ class UserLikedPostsView(APIView):
 
     def get(self, request):
         likes = Like.objects.filter(user=request.user)
-        liked_post_ids = [like.post_id for like in likes]
-        liked_posts = Post.objects.filter(id__in=liked_post_ids).order_by('-created_at')
-        pagination_class = CustomSetPagination()
-        paginated_queryset = pagination_class.paginate_queryset(liked_posts, request)
-        serializer = PostSerializer(paginated_queryset, many=True)
-        return pagination_class.get_paginated_response(serializer.data)
+        liked_posts = [like.post for like in likes].order_by('-created_at')
+        serializer = PostSerializer(liked_posts, many=True)
+        return Response(serializer.data)

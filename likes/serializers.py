@@ -12,7 +12,7 @@ class PostLikeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['id', 'likes', 'created_at']
+        fields = ['id', 'likes']
 
     def get_likes(self, obj):
         return obj.likes.count()

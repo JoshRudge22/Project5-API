@@ -35,8 +35,6 @@ class UserCommentedPostsAPIView(APIView):
 
     def get(self, request):
         user_id = request.user.id
-        commented_posts = Post.objects.filter(comments__user_id=user_id).order_by('-comments__created_at')
-        pagination_class = CustomSetPagination()
-        paginated_queryset = pagination_class.paginate_queryset(commented_posts, request)
-        serializer = PostSerializer(paginated_queryset, many=True)
-        return pagination_class.get_paginated_response(serializer.data)
+        commented_posts = Post.objects.filter(comments__user_id=user_id).distinct()
+        serializer = PostSerializer(commented_posts, many=True)
+        return Response(serializer.data)
