@@ -79,6 +79,7 @@ class FollowingFeed(APIView):
     def get(self, request):
         following_users = Follow.objects.filter(follower=request.user).values_list('following', flat=True)
         following_posts = Post.objects.filter(user__in=following_users).order_by('-created_at')
-        serializer = PostSerializer(following_posts, many=True)
-        return Response(serializer.data)
-
+        paginator = CustomSetPagination()
+        paginated_following_posts = paginator.paginate_queryset(following_posts, request)
+        serializer = PostSerializer(paginated_following_posts, many=True)
+        return paginator.get_paginated_response(serializer.data)
