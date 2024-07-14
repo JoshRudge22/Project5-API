@@ -1,10 +1,12 @@
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, generics, permissions
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.pagination import LimitOffsetPagination
 from django.http import Http404
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
 from .models import Post
 from follow.models import Follow
 from .serializers import PostSerializer
@@ -60,11 +62,13 @@ class PostDetail(APIView):
 
 class UserPostList(generics.ListAPIView):
     serializer_class = PostSerializer
-    permission_classes = [IsOwnerOrReadOnly]
     pagination_class = CustomSetPagination
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        return Post.objects.filter(user=self.request.user).order_by('-created_at')
+        username = self.kwargs['username']
+        user = get_object_or_404(User, username=username)
+        return Post.objects.filter(user=user).order_by('-created_at')
 
 class FeedList(generics.ListAPIView):
     queryset = Post.objects.all().order_by('-created_at')
