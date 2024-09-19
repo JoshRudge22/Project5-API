@@ -119,7 +119,7 @@ CORS_ALLOWED_ORIGIN_REGEXES = [ r"^https://.*\.codeinstitute-ide\.net$"]
 
 CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = ['https://8000-joshrudge22-project5api-a8gemgpmvag.ws.codeinstitute-ide.net', 'https://*.codeinstitute-ide.net']
+CSRF_TRUSTED_ORIGINS = ['https://8000-joshrudge22-project5api-a8gemgpmvag.ws.codeinstitute-ide.net', 'https://3000-joshrudge22-frontendpro-qebec8t3q50.ws-eu116.gitpod.io', 'https://*.codeinstitute-ide.net']
 
 ROOT_URLCONF = 'api.urls'
 
