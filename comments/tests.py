@@ -18,3 +18,7 @@ class CommentTestCase(TestCase):
     def test_comment_user(self):
         comment = Comment.objects.create(user=self.user, post=self.post, content='This is a test comment')
         self.assertEqual(comment.user, self.user)
+        
+    def test_comment_post(self):
+        comment = Comment.objects.create(user=self.user, post=self.post, content='This is a test comment')
+        self.assertEqual(comment.post, self.post)
