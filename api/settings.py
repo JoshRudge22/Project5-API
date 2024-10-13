@@ -42,7 +42,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 
 DEBUG = True
-ALLOWED_HOSTS = [os.environ.get('8000-joshrudge22-project5api-y7tcnmgu6xf.ws-eu116.gitpod.io', '8000-joshrudge22-project5api-y7tcnmgu6xf.ws-eu116.gitpod.io')]
+ALLOWED_HOSTS = [os.environ.get('8000-joshrudge22-project5api-y7tcnmgu6xf.ws-eu116.gitpod.io', 'api-backend-project-3eba949b1615.herokuapp.com')]
 
 
 INSTALLED_APPS = [
@@ -126,7 +126,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
     'https://8000-joshrudge22-project5api-y7tcnmgu6xf.ws-eu116.gitpod.io',
-    'https://3000-joshrudge22-frontendpro-qebec8t3q50.ws-eu116.gitpod.io',
+    'https://3000-joshrudge22-frontendpro-qebec0t3q50.ws-eu116.gitpod.io',
     'https://*.codeinstitute-ide.net'
 ]
 

@@ -62,4 +62,12 @@ class TestUserLikedPostsView(TestCase):
         response = self.client.get(url)
         serializer = PostSerializer([self.post1, self.post2], many=True)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+<<<<<<< Updated upstream
         self.assertEqual(response.json(), serializer.data)
+=======
+<<<<<<< HEAD
+        self.assertEqual(response.json(), serializer.data)
+=======
+        self.assertEqual(response.json(), serializer.data)
+>>>>>>> cc7f036 (updated files)
+>>>>>>> Stashed changes

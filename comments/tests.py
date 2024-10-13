@@ -21,4 +21,12 @@ class CommentTestCase(TestCase):
         
     def test_comment_post(self):
         comment = Comment.objects.create(user=self.user, post=self.post, content='This is a test comment')
+<<<<<<< Updated upstream
         self.assertEqual(comment.post, self.post)
+=======
+<<<<<<< HEAD
+        self.assertEqual(comment.post, self.post)
+=======
+        self.assertEqual(comment.post, self.post)
+>>>>>>> cc7f036 (updated files)
+>>>>>>> Stashed changes

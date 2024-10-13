@@ -27,4 +27,12 @@ class ProfileModelTests(TestCase):
 
     def test_profile_signal_creation(self):
         """Test that profile is automatically created via signal when a user is created."""
+<<<<<<< Updated upstream
         self.assertEqual(Profile.objects.count(), 1)
+=======
+<<<<<<< HEAD
+        self.assertEqual(Profile.objects.count(), 1)
+=======
+        self.assertEqual(Profile.objects.count(), 1)
+>>>>>>> cc7f036 (updated files)
+>>>>>>> Stashed changes

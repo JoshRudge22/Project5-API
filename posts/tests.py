@@ -41,4 +41,12 @@ class TestPostAPI(TestCase):
         response = self.client.get('/posts/user/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Assert based on user posts created
+<<<<<<< Updated upstream
         self.assertGreaterEqual(len(response.data), 2)
+=======
+<<<<<<< HEAD
+        self.assertGreaterEqual(len(response.data), 2)
+=======
+        self.assertGreaterEqual(len(response.data), 2)
+>>>>>>> cc7f036 (updated files)
+>>>>>>> Stashed changes
