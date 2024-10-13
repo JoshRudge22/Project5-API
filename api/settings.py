@@ -42,7 +42,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 
 DEBUG = True
-ALLOWED_HOSTS = [os.environ.get('Allowed_Host', '8000-joshrudge22-project5api-y7tcnmgu6xf.ws-eu116.gitpod.io')]
+ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOST', '8000-joshrudge22-project5api-y7tcnmgu6xf.ws-eu116.gitpod.io', 'api-backend-project-3eba949b1615.herokuapp.com')]
 
 
 INSTALLED_APPS = [
