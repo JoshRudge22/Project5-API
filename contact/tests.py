@@ -55,7 +55,7 @@ class ContactViewTestCase(TestCase):
         }
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(Contact.objects.count(), 1)
+        self.assertEqual(Contact.objects.count(), 2)
 
     def test_post_contact_invalid_data(self):
         data = {
@@ -66,3 +66,8 @@ class ContactViewTestCase(TestCase):
         }
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    def test_get_contacts_data(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['name'], 'John Doe')

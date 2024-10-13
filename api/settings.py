@@ -15,13 +15,16 @@ import os
 import dj_database_url
 import datetime
 
+
 if os.path.exists('env.py'):
     import env
+
 
 CLOUDINARY_STORAGE = {
     'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL')
 }
 MEDIA_URL = '/media/'
+
 
 if 'CLIENT_ORIGIN_DEV' in os.environ:
     extracted_url = re.match(r'^.+-', os.environ.get('CLIENT_ORIGIN_DEV', ''), re.IGNORECASE).group(0)
@@ -30,66 +33,64 @@ if 'CLIENT_ORIGIN_DEV' in os.environ:
     ]
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOST'),
-'localhost']
-# Application definition
+DEBUG = True
+ALLOWED_HOSTS = [os.environ.get('8000-joshrudge22-project5api-y7tcnmgu6xf.ws-eu116.gitpod.io', '8000-joshrudge22-project5api-y7tcnmgu6xf.ws-eu116.gitpod.io')]
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
-    'django.contrib.sites', 
-    'allauth', 
-    'allauth.account', 
-    'allauth.socialaccount', 
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     'dj_rest_auth.registration',
     'corsheaders',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage',
     'django.contrib.staticfiles',
     'rest_framework',
     'cloudinary',
+    'cloudinary_storage',
     'django_filters',
-    'rest_framework.authtoken', 
-    'dj_rest_auth', 
+    'rest_framework.authtoken',
+    'dj_rest_auth',
     'profiles',
     'posts',
     'comments',
     'likes',
     'contact',
-    'follow'
+    'follow',
 ]
 
+
 SITE_ID = 1
+
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [(
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication'
         if 'DEV' in os.environ
         else 'dj_rest_auth.jwt_auth.JWTCookieAuthentication'
-    )],
-    'DEFAULT_PAGINATION_CLASS':
-        'rest_framework.pagination.PageNumberPagination',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
     'DATETIME_FORMAT': '%d %b %Y',
 }
+
 if 'DEV' not in os.environ:
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = [
         'rest_framework.renderers.JSONRenderer',
     ]
+
 
 REST_USE_JWT = True
 JWT_AUTH_SECURE = True
@@ -97,8 +98,11 @@ JWT_AUTH_COOKIE = 'my-app-auth'
 JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
 JWT_AUTH_SAMESITE = 'None'
 
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'api.serializers.CurrentUserSerializer'
+}
 
-REST_AUTH_SERIALIZERS = {'USER_DETAILS_SERIALIZER': 'api.serializers.CurrentUserSerializer'}
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -107,19 +111,24 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 if 'CLIENT_ORIGIN' in os.environ:
     CORS_ALLOWED_ORIGINS = [
         os.environ.get('CLIENT_ORIGIN')
     ]
-CORS_ALLOWED_ORIGIN_REGEXES = [ r"^https://.*\.codeinstitute-ide\.net$"]
-
+CORS_ALLOWED_ORIGIN_REGEXES = [r"^https://.*\.codeinstitute-ide\.net$"]
 CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = ['https://8000-joshrudge22-project5api-a8gemgpmvag.ws.codeinstitute-ide.net', 'https://3000-joshrudge22-frontendpro-qebec8t3q50.ws-eu116.gitpod.io', 'https://*.codeinstitute-ide.net']
+CSRF_TRUSTED_ORIGINS = [
+    'https://8000-joshrudge22-project5api-y7tcnmgu6xf.ws-eu116.gitpod.io',
+    'https://3000-joshrudge22-frontendpro-qebec8t3q50.ws-eu116.gitpod.io',
+    'https://*.codeinstitute-ide.net'
+]
 
 ROOT_URLCONF = 'api.urls'
 
@@ -142,21 +151,17 @@ TEMPLATES = [
 WSGI_APPLICATION = 'api.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
 DATABASES = {
-    'default': ({
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    } if 'DATABASE_URL' not in os.environ else dj_database_url.parse(
-        os.environ.get('DATABASE_URL')
-    ))
+    'default': (
+        {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        } if 'DATABASE_URL' not in os.environ else dj_database_url.parse(
+            os.environ.get('DATABASE_URL')
+        )
+    )
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -174,26 +179,14 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/3.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
-
 STATIC_URL = '/static/'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

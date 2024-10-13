@@ -1,5 +1,7 @@
+Ahmed Mujtaba
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
+from django.urls import reverse
 from rest_framework import status
 from likes.models import Like
 from posts.models import Post
@@ -13,19 +15,22 @@ class TestPostLikeView(TestCase):
         self.client.force_login(self.user)
 
     def test_post_like(self):
-        response = self.client.post(f'/posts/{self.post.id}/like/')
+        url = reverse('post-like', args=[self.post.id])
+        response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Like.objects.filter(user=self.user, post=self.post).count(), 1)
 
     def test_post_unlike(self):
         Like.objects.create(user=self.user, post=self.post)
-        response = self.client.delete(f'/posts/{self.post.id}/like/')
+        url = reverse('post-like', args=[self.post.id])
+        response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Like.objects.filter(user=self.user, post=self.post).count(), 0)
 
     def test_post_already_liked(self):
         Like.objects.create(user=self.user, post=self.post)
-        response = self.client.post(f'/posts/{self.post.id}/like/')
+        url = reverse('post-like', args=[self.post.id])
+        response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 class TestPostLikesView(TestCase):
@@ -37,9 +42,10 @@ class TestPostLikesView(TestCase):
 
     def test_get_post_likes(self):
         Like.objects.create(user=self.user, post=self.post)
-        response = self.client.get(f'/posts/{self.post.id}/likes/')
+        url = reverse('post-likes', args=[self.post.id])
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'usernames': [self.user.username]})
+        self.assertEqual(response.json(), {'usernames': [self.user.username]})
 
 class TestUserLikedPostsView(TestCase):
     def setUp(self):
@@ -52,7 +58,8 @@ class TestUserLikedPostsView(TestCase):
         self.client.force_login(self.user)
 
     def test_get_user_liked_posts(self):
-        response = self.client.get('/users/liked-posts/')
+        url = reverse('user-liked-posts')
+        response = self.client.get(url)
         serializer = PostSerializer([self.post1, self.post2], many=True)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.json(), serializer.data)
