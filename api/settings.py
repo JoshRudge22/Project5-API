@@ -13,38 +13,34 @@ import re
 from pathlib import Path
 import os
 import dj_database_url
-import datetime
-
 
 if os.path.exists('env.py'):
     import env
 
-
+# Cloudinary for Media Storage
 CLOUDINARY_STORAGE = {
     'CLOUDINARY_URL': os.environ.get('CLOUDINARY_URL')
 }
 MEDIA_URL = '/media/'
-
-
-if 'CLIENT_ORIGIN_DEV' in os.environ:
-    extracted_url = re.match(r'^.+-', os.environ.get('CLIENT_ORIGIN_DEV', ''), re.IGNORECASE).group(0)
-    CORS_ALLOWED_ORIGIN_REGEXES = [
-        rf"{extracted_url}(eu|us)\d+\w\.gitpod\.io$",
-    ]
-
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-
+# Base Directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+# Secret Key (Ensure it's set in Heroku Config Vars)
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
+# Debug Mode (Set to False in Production)
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-DEBUG = True
-ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOST', '8000-joshrudge22-project5api-y7tcnmgu6xf.ws-eu116.gitpod.io', 'api-backend-project-3eba949b1615.herokuapp.com')]
+# Allowed Hosts (Make sure Heroku & Gitpod URLs are included)
+ALLOWED_HOSTS = [
+    os.environ.get('ALLOWED_HOST', '8000-joshrudge22-project5api-qttwo6yq3zs.ws-eu117.gitpod.io'),
+    'quickpics-fe-7b4c9c18edc7.herokuapp.com',  # Frontend Heroku
+    'joshapp-backend-efcd8c73d793.herokuapp.com'  # Backend Heroku
+]
 
-
+# Installed Apps
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -72,9 +68,19 @@ INSTALLED_APPS = [
     'follow',
 ]
 
-
+# Authentication & JWT
 SITE_ID = 1
+REST_USE_JWT = True
+JWT_AUTH_SECURE = True
+JWT_AUTH_COOKIE = 'my-app-auth'
+JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
+JWT_AUTH_SAMESITE = 'None'
 
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'api.serializers.CurrentUserSerializer'
+}
+
+# Rest Framework Configuration
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication'
@@ -91,19 +97,7 @@ if 'DEV' not in os.environ:
         'rest_framework.renderers.JSONRenderer',
     ]
 
-
-REST_USE_JWT = True
-JWT_AUTH_SECURE = True
-JWT_AUTH_COOKIE = 'my-app-auth'
-JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
-JWT_AUTH_SAMESITE = 'None'
-
-REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'api.serializers.CurrentUserSerializer'
-}
-
-
-
+# Middleware
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -116,22 +110,25 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# CORS & CSRF
+CORS_ALLOWED_ORIGINS = [
+    'https://quickpics-fe-7b4c9c18edc7.herokuapp.com',
+    'https://joshapp-backend-efcd8c73d793.herokuapp.com',
+]
 
-if 'CLIENT_ORIGIN' in os.environ:
-    CORS_ALLOWED_ORIGINS = [
-        os.environ.get('CLIENT_ORIGIN')
-    ]
 CORS_ALLOWED_ORIGIN_REGEXES = [r"^https://.*\.codeinstitute-ide\.net$"]
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
     'https://8000-joshrudge22-project5api-y7tcnmgu6xf.ws-eu116.gitpod.io',
-    'https://3000-joshrudge22-frontendpro-qebec0t3q50.ws-eu116.gitpod.io',
-    'https://*.codeinstitute-ide.net'
+    'https://quickpics-fe-7b4c9c18edc7.herokuapp.com',
+    'https://joshapp-backend-efcd8c73d793.herokuapp.com',
 ]
 
+# URL Configuration
 ROOT_URLCONF = 'api.urls'
 
+# Templates
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -148,45 +145,29 @@ TEMPLATES = [
     },
 ]
 
+# WSGI Application
 WSGI_APPLICATION = 'api.wsgi.application'
 
-
+# Database Configuration (Uses Postgres if DATABASE_URL exists)
 DATABASES = {
-    'default': (
-        {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        } if 'DATABASE_URL' not in os.environ else dj_database_url.parse(
-            os.environ.get('DATABASE_URL')
-        )
-    )
+    'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
 }
 
-
+# Password Validation
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-
+# Localization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-
+# Static Files
 STATIC_URL = '/static/'
-
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
