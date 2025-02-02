@@ -71,7 +71,7 @@ INSTALLED_APPS = [
 # Authentication & JWT
 SITE_ID = 1
 REST_USE_JWT = True
-JWT_AUTH_SECURE = True
+JWT_AUTH_SECURE = False
 JWT_AUTH_COOKIE = 'my-app-auth'
 JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
 JWT_AUTH_SAMESITE = 'None'
@@ -112,17 +112,16 @@ MIDDLEWARE = [
 
 # CORS & CSRF
 CORS_ALLOWED_ORIGINS = [
-    'https://quickpics-fe-7b4c9c18edc7.herokuapp.com',
-    'https://joshapp-backend-efcd8c73d793.herokuapp.com',
+    "https://quickpics-fe-7b4c9c18edc7.herokuapp.com",
+    "https://joshapp-backend-efcd8c73d793.herokuapp.com",
 ]
 
 CORS_ALLOWED_ORIGIN_REGEXES = [r"^https://.*\.codeinstitute-ide\.net$"]
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://8000-joshrudge22-project5api-y7tcnmgu6xf.ws-eu116.gitpod.io',
-    'https://quickpics-fe-7b4c9c18edc7.herokuapp.com',
-    'https://joshapp-backend-efcd8c73d793.herokuapp.com',
+    "https://quickpics-fe-7b4c9c18edc7.herokuapp.com",
+    "https://joshapp-backend-efcd8c73d793.herokuapp.com",
 ]
 
 # URL Configuration
