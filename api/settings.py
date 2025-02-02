@@ -17,23 +17,18 @@ from datetime import timedelta
 if os.path.exists("env.py"):
     import env
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
-
 DEBUG = os.environ.get("DEBUG", "False") == "True"
-
 
 ALLOWED_HOSTS = [
     os.environ.get("ALLOWED_HOST", "8000-joshrudge22-project5api-qttwo6yq3zs.ws-eu117.gitpod.io"),
-    "quickpics-fe-7b4c9c18edc7.herokuapp.com",  # Frontend Heroku
-    "joshapp-backend-efcd8c73d793.herokuapp.com",  # Backend Heroku
+    "quickpics-fe-7b4c9c18edc7.herokuapp.com",
+    "joshapp-backend-efcd8c73d793.herokuapp.com",
 ]
 
-# Installed Apps
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -62,32 +57,30 @@ INSTALLED_APPS = [
     "follow",
 ]
 
-# Authentication & JWT Settings
 SITE_ID = 1
-REST_USE_JWT = True
-JWT_AUTH_SECURE = False 
-JWT_AUTH_COOKIE = "my-app-auth"
-JWT_AUTH_REFRESH_COOKIE = "my-refresh-token"
-JWT_AUTH_SAMESITE = "None"
 
-# JWT Token Expiry & Refresh Settings
+#JWT SETTINGS
+REST_USE_JWT = True
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "AUTH_HEADER_TYPES": ("Bearer",),
-    "USER_ID_FIELD": "id",
-    "USER_ID_CLAIM": "user_id",
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
-    "TOKEN_TYPE_CLAIM": "token_type",
 }
 
-# REST Framework Configuration
+JWT_AUTH_COOKIE = "access_token"
+JWT_AUTH_REFRESH_COOKIE = "refresh_token"
+JWT_AUTH_SAMESITE = "None"
+JWT_AUTH_SECURE = False
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.SessionAuthentication"
+        if "DEV" in os.environ
+        else "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
     ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
@@ -99,7 +92,7 @@ if "DEV" not in os.environ:
         "rest_framework.renderers.JSONRenderer",
     ]
 
-# Middleware
+#MIDDLEWARE
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -112,23 +105,28 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# CORS & CSRF Settings
+#CORS & CSRF SETTINGS
 CORS_ALLOWED_ORIGINS = [
     "https://quickpics-fe-7b4c9c18edc7.herokuapp.com",
     "https://joshapp-backend-efcd8c73d793.herokuapp.com",
 ]
 
-CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     "https://8000-joshrudge22-project5api-y7tcnmgu6xf.ws-eu116.gitpod.io",
     "https://quickpics-fe-7b4c9c18edc7.herokuapp.com",
     "https://joshapp-backend-efcd8c73d793.herokuapp.com",
 ]
 
-# URL Configuration
+CORS_ALLOW_CREDENTIALS = True
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_HTTPONLY = True
+
+#URLS
 ROOT_URLCONF = "api.urls"
 
-# Templates
+#TEMPLATES
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -145,15 +143,15 @@ TEMPLATES = [
     },
 ]
 
-# WSGI Application
+#WSGI
 WSGI_APPLICATION = "api.wsgi.application"
 
-# Database Configuration (Uses Postgres if DATABASE_URL exists)
+#DATABASE
 DATABASES = {
     "default": dj_database_url.config(default=os.environ.get("DATABASE_URL"))
 }
 
-# Password Validation
+#PASSWORD VALIDATORS
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -161,13 +159,13 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# Localization
+#LOCALE
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# Static Files
+#STATIC FILES
 STATIC_URL = "/static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
