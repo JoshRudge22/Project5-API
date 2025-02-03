@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
-DEBUG = os.environ.get("DEBUG", "False") == "True"
+DEBUG = True
 
 ALLOWED_HOSTS = [
     os.environ.get("ALLOWED_HOST", "8000-joshrudge22-project5api-qttwo6yq3zs.ws-eu117.gitpod.io"),
@@ -62,12 +62,11 @@ SITE_ID = 1
 #JWT SETTINGS
 REST_USE_JWT = True
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "AUTH_HEADER_TYPES": ("Bearer",),
-    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
 }
 
 JWT_AUTH_COOKIE = "access_token"
@@ -109,6 +108,7 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "https://quickpics-fe-7b4c9c18edc7.herokuapp.com",
     "https://joshapp-backend-efcd8c73d793.herokuapp.com",
+    "https://3000-joshrudge22-frontendpro-5o99owih0ai.ws-eu117.gitpod.io",  # Add Gitpod frontend
 ]
 
 CSRF_TRUSTED_ORIGINS = [
