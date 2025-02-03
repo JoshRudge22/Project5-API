@@ -107,12 +107,11 @@ MIDDLEWARE = [
 #CORS & CSRF SETTINGS
 CORS_ALLOWED_ORIGINS = [
     "https://quickpics-fe-7b4c9c18edc7.herokuapp.com",
-    "https://joshapp-backend-efcd8c73d793.herokuapp.com",
-    "https://3000-joshrudge22-frontendpro-5o99owih0ai.ws-eu117.gitpod.io",  # Add Gitpod frontend
+    "https://8000-joshrudge22-project5api-qttwo6yq3zs.ws-eu117.gitpod.io",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://8000-joshrudge22-project5api-y7tcnmgu6xf.ws-eu116.gitpod.io",
+    "https://8000-joshrudge22-project5api-qttwo6yq3zs.ws-eu117.gitpod.io",
     "https://quickpics-fe-7b4c9c18edc7.herokuapp.com",
     "https://joshapp-backend-efcd8c73d793.herokuapp.com",
 ]
