@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
     os.environ.get("ALLOWED_HOST", "8000-joshrudge22-project5api-qttwo6yq3zs.ws-eu117.gitpod.io"),
@@ -59,10 +59,10 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
-#JWT SETTINGS
+# ✅ JWT SETTINGS FIXED
 REST_USE_JWT = True
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
@@ -77,21 +77,12 @@ JWT_AUTH_SECURE = False
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
-        "rest_framework.authentication.SessionAuthentication"
-        if "DEV" in os.environ
-        else "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
     ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
     "DATETIME_FORMAT": "%d %b %Y",
 }
 
-if "DEV" not in os.environ:
-    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = [
-        "rest_framework.renderers.JSONRenderer",
-    ]
-
-#MIDDLEWARE
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -104,10 +95,10 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-#CORS & CSRF SETTINGS
+# ✅ FIXED CORS
 CORS_ALLOWED_ORIGINS = [
     "https://quickpics-fe-7b4c9c18edc7.herokuapp.com",
-    "https://8000-joshrudge22-project5api-qttwo6yq3zs.ws-eu117.gitpod.io",
+    "https://3000-joshrudge22-frontendpro-5o99owih0ai.ws-eu117.gitpod.io",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -122,10 +113,8 @@ CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = True
 SESSION_COOKIE_HTTPONLY = True
 
-#URLS
 ROOT_URLCONF = "api.urls"
 
-#TEMPLATES
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -142,15 +131,12 @@ TEMPLATES = [
     },
 ]
 
-#WSGI
 WSGI_APPLICATION = "api.wsgi.application"
 
-#DATABASE
 DATABASES = {
     "default": dj_database_url.config(default=os.environ.get("DATABASE_URL"))
 }
 
-#PASSWORD VALIDATORS
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -158,13 +144,11 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-#LOCALE
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-#STATIC FILES
 STATIC_URL = "/static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
