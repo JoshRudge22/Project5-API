@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
-DEBUG = os.environ.get("DEBUG", "False") == "True"
+DEBUG = True
 
 ALLOWED_HOSTS = [
     os.environ.get("ALLOWED_HOST", "8000-joshrudge22-project5api-qttwo6yq3zs.ws-eu117.gitpod.io"),
@@ -59,7 +59,6 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
-# ✅ JWT SETTINGS FIXED
 REST_USE_JWT = True
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
@@ -95,10 +94,9 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# ✅ FIXED CORS
 CORS_ALLOWED_ORIGINS = [
     "https://quickpics-fe-7b4c9c18edc7.herokuapp.com",
-    "https://3000-joshrudge22-frontendpro-5o99owih0ai.ws-eu117.gitpod.io",
+    "https://8000-joshrudge22-project5api-qttwo6yq3zs.ws-eu117.gitpod.io",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
