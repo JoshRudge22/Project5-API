@@ -60,18 +60,27 @@ INSTALLED_APPS = [
 SITE_ID = 1
 
 REST_USE_JWT = True
+JWT_AUTH_COOKIE = "access_token"
+JWT_AUTH_REFRESH_COOKIE = "refresh_token"
+JWT_AUTH_SAMESITE = "None"
+JWT_AUTH_SECURE = True
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
-    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_COOKIE": "access_token",
+    "AUTH_COOKIE_DOMAIN": None,
+    "AUTH_COOKIE_SECURE": True,
+    "AUTH_COOKIE_HTTP_ONLY": True,
+    "AUTH_COOKIE_PATH": "/",
+    "AUTH_COOKIE_SAMESITE": "Lax",
 }
 
-JWT_AUTH_COOKIE = "access_token"
-JWT_AUTH_REFRESH_COOKIE = "refresh_token"
-JWT_AUTH_SAMESITE = "None"
-JWT_AUTH_SECURE = False
+REST_AUTH_SERIALIZERS = {
+    "USER_DETAILS_SERIALIZER": "api.serializers.CurrentUserSerializer"
+}
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
@@ -105,13 +114,6 @@ CSRF_TRUSTED_ORIGINS = [
     "https://joshapp-backend-efcd8c73d793.herokuapp.com",
 ]
 
-CORS_ALLOW_CREDENTIALS = True
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
-CSRF_COOKIE_HTTPONLY = True
-SESSION_COOKIE_HTTPONLY = True
-
-ROOT_URLCONF = "api.urls"
 
 TEMPLATES = [
     {
